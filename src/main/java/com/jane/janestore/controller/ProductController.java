@@ -3,6 +3,7 @@ package com.jane.janestore.controller;
 import com.jane.janestore.dto.ProductDto;
 import com.jane.janestore.service.IProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,9 +20,9 @@ public class ProductController {
     private final IProductService iProductService;
 
     @GetMapping
-    public List<ProductDto> getProducts() { // DTO Pattern
+    public ResponseEntity<List<ProductDto>> getProducts() { // DTO Pattern
         List<ProductDto> productList = iProductService.getProducts();
-        return productList;
+        return ResponseEntity.status(200).body(productList);
     }
 
 }
