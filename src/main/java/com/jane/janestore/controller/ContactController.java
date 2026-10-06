@@ -2,7 +2,9 @@ package com.jane.janestore.controller;
 
 import com.jane.janestore.dto.ContactRequestDto;
 import com.jane.janestore.service.IContactService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,7 +19,7 @@ public class ContactController {
     private final IContactService iContactService;
 
     @PostMapping
-    public ResponseEntity<String> saveContact(@RequestBody ContactRequestDto contactRequestDto) {
+    public ResponseEntity<String> saveContact(@Valid @RequestBody ContactRequestDto contactRequestDto) {
         iContactService.saveContact(contactRequestDto);
         return ResponseEntity.status(201).body("Request processed successfully");
     }
