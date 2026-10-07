@@ -1,6 +1,7 @@
 package com.jane.janestore.exception;
 
 import com.jane.janestore.dto.ErrorResponseDto;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -13,10 +14,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
   @ExceptionHandler(Exception.class)
   public ResponseEntity<ErrorResponseDto> handleException(Exception e, WebRequest request) {
+    log.error("An error occurred: {}", e.getMessage(), e);
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
         new ErrorResponseDto(
           request.getDescription(false),
@@ -27,6 +30,7 @@ public class GlobalExceptionHandler {
   }
   @ExceptionHandler(MethodArgumentNotValidException.class)
   public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException e, WebRequest request) {
+    log.error("An error occurred: {}", e.getMessage(), e);
     Map<String, String> errors = new HashMap<>();
     e.getBindingResult().getFieldErrors().forEach(error ->
       errors.put(error.getField(), error.getDefaultMessage()));
