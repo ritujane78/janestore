@@ -5,6 +5,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -21,7 +26,7 @@ public class WebConfig {
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     return http
       .authorizeHttpRequests(requests -> requests
-        .requestMatchers("/api/v1/products/**").permitAll()
+//        .requestMatchers("/api/v1/products/**").permitAll()
         .requestMatchers("/api/v1/contacts").permitAll()
         .anyRequest().authenticated()
       )
@@ -43,5 +48,19 @@ public class WebConfig {
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     source.registerCorsConfiguration("/**", config);
     return source;
+  }
+
+  @Bean
+  public UserDetailsService userDetailsService(){
+    var user1 = User.builder().username("ritu").password("$2a$12$i42LOm2wLOjH7pxDhusAHebOryChS2k69hixxJcvd8z0AeSsKRdnK")
+      .roles("USER").build();
+    var user2 = User.builder().username("jane").password("$2a$12$i42LOm2wLOjH7pxDhusAHebOryChS2k69hixxJcvd8z0AeSsKRdnK")
+      .roles("USER").build();
+
+    return new InMemoryUserDetailsManager(Arrays.asList(user1,user2));
+  }
+  @Bean
+  public PasswordEncoder passwordEncoder(){
+    return new BCryptPasswordEncoder();
   }
 }
