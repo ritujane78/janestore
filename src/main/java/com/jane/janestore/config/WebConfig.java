@@ -1,8 +1,12 @@
 package com.jane.janestore.config;
 
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.User;
@@ -26,7 +30,8 @@ public class WebConfig {
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     return http
       .authorizeHttpRequests(requests -> requests
-//        .requestMatchers("/api/v1/products/**").permitAll()
+        .requestMatchers("/api/v1/products/**").permitAll()
+          .requestMatchers("/api/v1/auth/**").permitAll()
         .requestMatchers("/api/v1/contacts").permitAll()
         .anyRequest().authenticated()
       )
@@ -53,14 +58,40 @@ public class WebConfig {
   @Bean
   public UserDetailsService userDetailsService(){
     var user1 = User.builder().username("ritu").password("$2a$12$i42LOm2wLOjH7pxDhusAHebOryChS2k69hixxJcvd8z0AeSsKRdnK")
-      .roles("USER").build();
+      .build();
     var user2 = User.builder().username("jane").password("$2a$12$i42LOm2wLOjH7pxDhusAHebOryChS2k69hixxJcvd8z0AeSsKRdnK")
-      .roles("USER").build();
+      .build();
 
     return new InMemoryUserDetailsManager(Arrays.asList(user1,user2));
+  }
+
+  @Bean
+  public AuthenticationManager authenticationManagerBean(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) throws Exception {
+    var daoAuthenticationProvider = new DaoAuthenticationProvider(userDetailsService);
+    daoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
+    var providerManager = new ProviderManager(daoAuthenticationProvider);
+    return providerManager;
+
   }
   @Bean
   public PasswordEncoder passwordEncoder(){
     return new BCryptPasswordEncoder();
+  }
+
+  @Bean
+  public CommandLineRunner checkUsers(UserDetailsService userDetailsService) {
+    return args -> {
+      for (String username : Arrays.asList("ritu", "jane")) {
+        try {
+          var user = userDetailsService.loadUserByUsername(username);
+
+          System.out.println("User created: " + user.getUsername());
+          System.out.println("Enabled: " + user.isEnabled());
+          System.out.println("Authorities: " + user.getAuthorities());
+        } catch (Exception e) {
+          System.out.println("User not found: " + username);
+        }
+      }
+    };
   }
 }
