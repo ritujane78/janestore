@@ -56,16 +56,6 @@ public class WebConfig {
   }
 
   @Bean
-  public UserDetailsService userDetailsService(){
-    var user1 = User.builder().username("ritu").password("$2a$12$i42LOm2wLOjH7pxDhusAHebOryChS2k69hixxJcvd8z0AeSsKRdnK")
-      .build();
-    var user2 = User.builder().username("jane").password("$2a$12$i42LOm2wLOjH7pxDhusAHebOryChS2k69hixxJcvd8z0AeSsKRdnK")
-      .build();
-
-    return new InMemoryUserDetailsManager(Arrays.asList(user1,user2));
-  }
-
-  @Bean
   public AuthenticationManager authenticationManagerBean(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) throws Exception {
     var daoAuthenticationProvider = new DaoAuthenticationProvider(userDetailsService);
     daoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
