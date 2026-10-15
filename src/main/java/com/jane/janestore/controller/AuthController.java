@@ -51,9 +51,9 @@ public class AuthController {
        new UsernamePasswordAuthenticationToken(
          loginRequestDto.username(),
          loginRequestDto.password()));
-     var loggedInUser = (User) authentication.getPrincipal();
+     var loggedInUser = (Customer) authentication.getPrincipal();
      UserDto userDto = new UserDto();
-     userDto.setName(loggedInUser.getUsername());
+     BeanUtils.copyProperties(loggedInUser, userDto);
      String jwtToken = jwtUtil.generateJwtToken(authentication);
      return ResponseEntity.ok().body
        (new LoginResponseDto(HttpStatus.OK.getReasonPhrase(),userDto,jwtToken));

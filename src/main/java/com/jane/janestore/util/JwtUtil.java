@@ -1,6 +1,7 @@
 package com.jane.janestore.util;
 
 import com.jane.janestore.constants.ApplicationConstants;
+import com.jane.janestore.entity.Customer;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
@@ -23,9 +24,11 @@ public class JwtUtil {
     String jwt = "";
     String secret = env.getProperty(ApplicationConstants.JWT_SECRET_KEY, ApplicationConstants.JWT_SECRET_DEFAULT_VALUE);
     SecretKey secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
-    User fetchedUser = (User) authentication.getPrincipal();
+    var fetchedCustomer = (Customer) authentication.getPrincipal();
     jwt = Jwts.builder().issuer("Jane Production").subject("JWT Token")
-      .claim("username", fetchedUser.getUsername())
+      .claim("username", fetchedCustomer.getName())
+      .claim("email", fetchedCustomer.getEmail())
+      .claim("mobileNumber", fetchedCustomer.getMobileNumber())
       .issuedAt(new Date())
       .expiration(new Date((new Date()).getTime() * 60 * 60 * 1000))
       .signWith(secretKey)

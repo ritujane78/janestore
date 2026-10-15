@@ -5,6 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.authentication.password.CompromisedPasswordChecker;
@@ -59,10 +60,8 @@ public class WebConfig {
   }
 
   @Bean
-  public AuthenticationManager authenticationManagerBean(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) throws Exception {
-    var daoAuthenticationProvider = new DaoAuthenticationProvider(userDetailsService);
-    daoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
-    var providerManager = new ProviderManager(daoAuthenticationProvider);
+  public AuthenticationManager authenticationManagerBean(AuthenticationProvider authenticationProvider) throws Exception {
+    var providerManager = new ProviderManager(authenticationProvider);
     return providerManager;
 
   }
