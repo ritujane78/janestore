@@ -16,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.password.CompromisedPasswordChecker;
+import org.springframework.security.authentication.password.CompromisedPasswordDecision;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -40,6 +42,7 @@ public class AuthController {
   private final JwtUtil jwtUtil;
   private final CustomerRepository customerRepository;
   private final PasswordEncoder passwordEncoder;
+  private final CompromisedPasswordChecker compromisedPasswordChecker;
 
   @PostMapping("/login")
   public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto loginRequestDto){
@@ -79,6 +82,12 @@ public class AuthController {
         errors.put("mobileNumber", "Mobile number already exists");
       }
       return ResponseEntity.badRequest().body(errors);
+    }
+    CompromisedPasswordDecision decision = compromisedPasswordChecker.check(registerRequestDto.getPassword());
+    if (decision.isCompromised()){
+      return ResponseEntity.badRequest().body(
+        Map.of("password", "Please choose a strong password")
+      );
     }
 
     Customer customer = new Customer();
