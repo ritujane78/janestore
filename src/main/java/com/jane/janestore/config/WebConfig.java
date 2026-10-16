@@ -36,7 +36,8 @@ public class WebConfig {
         publicPaths.forEach(path -> {
           requests.requestMatchers(path).permitAll();
         });
-        requests.anyRequest().authenticated();
+        requests.requestMatchers("/api/v1/admin/**").hasRole("ADMIN");
+        requests.anyRequest().hasAnyRole("USER", "ADMIN");
         }
       )
       .csrf(csrfConfig -> csrfConfig.disable())
