@@ -15,7 +15,7 @@ import java.time.Instant;
 @Setter
 @Entity
 @Table(name = "address")
-public class Address {
+public class Address extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "address_id", nullable = false)
@@ -52,22 +52,22 @@ public class Address {
     @Column(name = "country", nullable = false, length = 100)
     private String country;
 
-    @NotNull
-    @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "created_at", nullable = false)
-    private Instant createdAt;
-
-    @Size(max = 20)
-    @NotNull
-    @Column(name = "created_by", nullable = false, length = 20)
-    private String createdBy;
-
-    @Column(name = "updated_at")
-    private Instant updatedAt;
-
-    @Size(max = 20)
-    @Column(name = "updated_by", length = 20)
-    private String updatedBy;
+//    @NotNull
+//    @ColumnDefault("CURRENT_TIMESTAMP")
+//    @Column(name = "created_at", nullable = false)
+//    private Instant createdAt;
+//
+//    @Size(max = 20)
+//    @NotNull
+//    @Column(name = "created_by", nullable = false, length = 20)
+//    private String createdBy;
+//
+//    @Column(name = "updated_at")
+//    private Instant updatedAt;
+//
+//    @Size(max = 20)
+//    @Column(name = "updated_by", length = 20)
+//    private String updatedBy;
 
 
 }

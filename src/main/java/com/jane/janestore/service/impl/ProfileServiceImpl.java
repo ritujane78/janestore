@@ -2,6 +2,7 @@ package com.jane.janestore.service.impl;
 
 import com.jane.janestore.dto.ProfileRequestDto;
 import com.jane.janestore.dto.ProfileResponseDto;
+import com.jane.janestore.entity.Address;
 import com.jane.janestore.entity.Customer;
 import com.jane.janestore.repository.CustomerRepository;
 import com.jane.janestore.service.IProfileService;
@@ -29,6 +30,17 @@ public class ProfileServiceImpl implements IProfileService {
         Customer customer = getAuthenticatedCustomer();
         boolean isEmailUpdated = !customer.getEmail().equals(profileRequestDto.getEmail().trim());
         BeanUtils.copyProperties(profileRequestDto, customer);
+        Address address = customer.getAddress();
+        if(address == null){
+          address = new Address();
+          address.setCustomer(customer);
+        }
+        address.setStreet(profileRequestDto.getStreet());
+        address.setCity(profileRequestDto.getCity());
+        address.setState(profileRequestDto.getState());
+        address.setPostalCode(profileRequestDto.getPostalCode());
+        address.setCountry(profileRequestDto.getCountry());
+        customer.setAddress(address);
 
         customer = customerRepository.save(customer);
         ProfileResponseDto profileResponseDto = mapCustomerToProfileResponseDto(customer);
@@ -46,6 +58,13 @@ public class ProfileServiceImpl implements IProfileService {
     private ProfileResponseDto mapCustomerToProfileResponseDto(Customer customer) {
         ProfileResponseDto profileResponseDto = new ProfileResponseDto();
         BeanUtils.copyProperties(customer, profileResponseDto);
+        if(customer.getAddress() != null){
+          profileResponseDto.setCity(customer.getAddress().getCity());
+          profileResponseDto.setStreet(customer.getAddress().getStreet());
+          profileResponseDto.setCountry(customer.getAddress().getCountry());
+          profileResponseDto.setPostalCode(customer.getAddress().getPostalCode());
+          profileResponseDto.setState(customer.getAddress().getState());
+        }
         return profileResponseDto;
     }
 }
