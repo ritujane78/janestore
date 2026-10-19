@@ -1,5 +1,6 @@
 package com.jane.janestore.service.impl;
 
+import com.jane.janestore.dto.AddressDto;
 import com.jane.janestore.dto.ProfileRequestDto;
 import com.jane.janestore.dto.ProfileResponseDto;
 import com.jane.janestore.entity.Address;
@@ -59,11 +60,9 @@ public class ProfileServiceImpl implements IProfileService {
         ProfileResponseDto profileResponseDto = new ProfileResponseDto();
         BeanUtils.copyProperties(customer, profileResponseDto);
         if(customer.getAddress() != null){
-          profileResponseDto.setCity(customer.getAddress().getCity());
-          profileResponseDto.setStreet(customer.getAddress().getStreet());
-          profileResponseDto.setCountry(customer.getAddress().getCountry());
-          profileResponseDto.setPostalCode(customer.getAddress().getPostalCode());
-          profileResponseDto.setState(customer.getAddress().getState());
+          AddressDto addressDto = new AddressDto();
+          BeanUtils.copyProperties(customer.getAddress(), addressDto);
+          profileResponseDto.setAddress(addressDto);
         }
         return profileResponseDto;
     }

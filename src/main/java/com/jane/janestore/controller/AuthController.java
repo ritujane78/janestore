@@ -1,9 +1,6 @@
 package com.jane.janestore.controller;
 
-import com.jane.janestore.dto.LoginRequestDto;
-import com.jane.janestore.dto.LoginResponseDto;
-import com.jane.janestore.dto.RegisterRequestDto;
-import com.jane.janestore.dto.UserDto;
+import com.jane.janestore.dto.*;
 import com.jane.janestore.entity.Customer;
 import com.jane.janestore.entity.Role;
 import com.jane.janestore.repository.CustomerRepository;
@@ -22,10 +19,7 @@ import org.springframework.security.authentication.password.CompromisedPasswordD
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -57,6 +51,11 @@ public class AuthController {
      userDto.setRoles(authentication.getAuthorities().stream()
        .map(GrantedAuthority::getAuthority)
        .collect(Collectors.joining(",")));
+     if(loggedInUser.getAddress() != null){
+       AddressDto addressDto = new AddressDto();
+       BeanUtils.copyProperties(loggedInUser.getAddress(), addressDto);
+       userDto.setAddress(addressDto);
+     }
      String jwtToken = jwtUtil.generateJwtToken(authentication);
      return ResponseEntity.ok().body
        (new LoginResponseDto(HttpStatus.OK.getReasonPhrase(),userDto,jwtToken));
