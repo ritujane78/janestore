@@ -15,5 +15,5 @@ public interface IOrderService {
 
     List<OrderResponseDto> getAllPendingOrders();
 
-    Order updateOrderStatus(Long orderId, String orderStatus);
+    void updateOrderStatus(Long orderId, String orderStatus);
 }

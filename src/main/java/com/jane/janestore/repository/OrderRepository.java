@@ -3,7 +3,9 @@ package com.jane.janestore.repository;
 
 import com.jane.janestore.entity.Customer;
 import com.jane.janestore.entity.Order;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -29,4 +31,9 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
   @Query(value = "SELECT  * from orders o where o.order_status = ?1", nativeQuery = true)
   List<Order> findOrdersByStatusWithNativeQuery(String orderStatus);
+
+  @Transactional
+  @Modifying
+  @Query("update Order o set o.orderStatus= ?1, o.updatedAt = CURRENT TIMESTAMP , o.updatedBy = ?2 where o.orderId = ?3")
+  int updateOrderStatus(String orderStatus, String email, Long orderId);
 }
