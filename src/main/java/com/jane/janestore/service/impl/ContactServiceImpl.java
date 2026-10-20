@@ -57,6 +57,7 @@ public class ContactServiceImpl implements IContactService {
     private Contact transformToEntity(ContactRequestDto contactRequestDto) {
         Contact contact = new Contact();
         BeanUtils.copyProperties(contactRequestDto, contact);
+        contact.setStatus(ApplicationConstants.OPEN_MESSAGE);
         return contact;
     }
 }
