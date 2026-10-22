@@ -4,6 +4,7 @@ import com.jane.janestore.dto.*;
 import com.jane.janestore.entity.Customer;
 import com.jane.janestore.entity.Role;
 import com.jane.janestore.repository.CustomerRepository;
+import com.jane.janestore.repository.RoleRepository;
 import com.jane.janestore.util.JwtUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +36,7 @@ public class AuthController {
   private final AuthenticationManager authenticationManager;
   private final JwtUtil jwtUtil;
   private final CustomerRepository customerRepository;
+  private final RoleRepository roleRepository;
   private final PasswordEncoder passwordEncoder;
   private final CompromisedPasswordChecker compromisedPasswordChecker;
 
@@ -95,9 +97,7 @@ public class AuthController {
     Customer customer = new Customer();
     BeanUtils.copyProperties(registerRequestDto, customer);
     customer.setPasswordHash(passwordEncoder.encode(registerRequestDto.getPassword()));
-    Role role = new Role();
-    role.setName("ROLE_USER");
-    customer.setRoles(Set.of(role));
+    roleRepository.findByName("ROLE_USER").ifPresent(role -> customer.setRoles(Set.of(role)));
     customerRepository.save(customer);
     return ResponseEntity
       .status(HttpStatus.CREATED)

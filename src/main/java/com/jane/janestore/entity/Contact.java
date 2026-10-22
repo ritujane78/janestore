@@ -11,6 +11,10 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
+@NamedQuery(name = "Contact.findByStatus",
+query = "select c from Contact c where c.status = :status")
+@NamedNativeQuery(name = "Contact.findByStatusWithNativeQuery",
+query = "select * from contacts where status = :status", resultClass = Contact.class)
 @Table(name = "contacts")
 public class Contact extends BaseEntity {
   @Id
